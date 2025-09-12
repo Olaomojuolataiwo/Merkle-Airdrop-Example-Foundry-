@@ -1,0 +1,21 @@
+# Foundry build and cache
+out/
+cache/
+
+# Node.js dependencies (if used for scripts/tools)
+node_modules/
+
+# Environment variables
+.env
+.env.*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
