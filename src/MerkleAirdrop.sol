@@ -37,13 +37,7 @@ contract MerkleAirdrop is ReentrancyGuard {
         _;
     }
 
-    constructor(
-        address _token,
-        bytes32 _merkleRoot,
-        address _admin,
-        uint256 _startTime,
-        uint256 _endTime
-    ) {
+    constructor(address _token, bytes32 _merkleRoot, address _admin, uint256 _startTime, uint256 _endTime) {
         token = ERC20(_token);
         merkleRoot = _merkleRoot;
         admin = _admin;
@@ -52,12 +46,11 @@ contract MerkleAirdrop is ReentrancyGuard {
         endTime = _endTime;
     }
 
-    function claim(
-        uint256 index,
-        address account,
-        uint256 amount,
-        bytes32[] calldata proof
-    ) external nonReentrant claimWindow {
+    function claim(uint256 index, address account, uint256 amount, bytes32[] calldata proof)
+        external
+        nonReentrant
+        claimWindow
+    {
         require(!isClaimed[index], "MerkleAirdrop: already claimed");
         require(_verify(index, account, amount, proof), "MerkleAirdrop: invalid proof");
 
@@ -90,12 +83,11 @@ contract MerkleAirdrop is ReentrancyGuard {
     }
 
     // ======== INTERNAL ========
-    function _verify(
-        uint256 index,
-        address account,
-        uint256 amount,
-        bytes32[] calldata proof
-    ) internal view returns (bool) {
+    function _verify(uint256 index, address account, uint256 amount, bytes32[] calldata proof)
+        internal
+        view
+        returns (bool)
+    {
         bytes32 node = keccak256(abi.encodePacked(index, account, amount));
         bytes32 computedHash = node;
 

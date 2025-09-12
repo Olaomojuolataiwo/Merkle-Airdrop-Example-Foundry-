@@ -40,8 +40,7 @@ contract MerkleAirdropTest is Test {
     // ======== TESTS ========
 
     function testClaimSucceedsWithValidProof() public {
-
-	// 1. Set the claim window to include the current block timestamp
+        // 1. Set the claim window to include the current block timestamp
         uint256 start = block.timestamp - 1; // already started
         uint256 end = block.timestamp + 1 days; // ends in the future
         airdrop = new MerkleAirdrop(address(token), root, admin, start, end);
@@ -49,38 +48,36 @@ contract MerkleAirdropTest is Test {
         // 2. Fund airdrop with tokens
         token.mint(address(airdrop), amountA);
 
+        // 3. Allocate proof array
+        bytes32[] memory proof = new bytes32[](1);
+        proof[0] = leafB; // sibling
 
-	// 3. Allocate proof array
-        bytes32[] memory proof = new bytes32[](1); 
-	proof[0] = leafB; // sibling
-	
-	// 4. Warp time to ensure we are inside the claim window
+        // 4. Warp time to ensure we are inside the claim window
         vm.warp(start + 1);
 
-	// 5. Call claim
-	vm.prank(alice);
+        // 5. Call claim
+        vm.prank(alice);
         airdrop.claim(0, alice, amountA, proof);
 
-	// 6. Assertions
+        // 6. Assertions
         assertEq(token.balanceOf(alice), amountA);
         assertTrue(airdrop.isClaimed(0));
     }
 
     function testRejectedIfAlreadyClaimed() public {
-        
-	// 1. Set the claim window
+        // 1. Set the claim window
         uint256 start = block.timestamp - 1;
         uint256 end = block.timestamp + 1 days;
         airdrop = new MerkleAirdrop(address(token), root, admin, start, end);
 
-	// 2. Fund airdrop with tokens
+        // 2. Fund airdrop with tokens
         token.mint(address(airdrop), amountA);
 
         // 3. Allocate proof array
-        bytes32[] memory proof = new bytes32[](1); 
-	proof[0] = leafB;
+        bytes32[] memory proof = new bytes32[](1);
+        proof[0] = leafB;
 
-	// 4. Warp time inside claim window
+        // 4. Warp time inside claim window
         vm.warp(start + 1);
 
         // 5. First claim succeeds
@@ -88,7 +85,7 @@ contract MerkleAirdropTest is Test {
         airdrop.claim(0, alice, amountA, proof);
 
         // 6. Second claim reverts
-	vm.prank(alice);
+        vm.prank(alice);
         vm.expectRevert(bytes("MerkleAirdrop: already claimed"));
         airdrop.claim(0, alice, amountA, proof);
     }

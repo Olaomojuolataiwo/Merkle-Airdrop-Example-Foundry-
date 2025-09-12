@@ -43,7 +43,7 @@ contract MerkleAirdropAdditionalTest is Test {
 
         // Claim window
         start = block.timestamp;
-        end   = block.timestamp + 1 days;
+        end = block.timestamp + 1 days;
 
         // Deploy airdrop
         airdrop = new MerkleAirdrop(address(token), root, admin, start, end);
