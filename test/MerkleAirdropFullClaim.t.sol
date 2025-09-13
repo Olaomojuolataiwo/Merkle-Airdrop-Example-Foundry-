@@ -18,11 +18,7 @@ contract MerkleAirdropFullClaimTest is Test {
     ];
 
     // Claim amounts
-    uint256[] whitelistAmounts = [
-        1000 ether,
-        2000 ether,
-        1500 ether
-    ];
+    uint256[] whitelistAmounts = [1000 ether, 2000 ether, 1500 ether];
 
     bytes32 merkleRoot;
     mapping(address => bytes32[]) internal proofs;
@@ -41,13 +37,8 @@ contract MerkleAirdropFullClaimTest is Test {
         merkleRoot = buildMerkleRoot(leaves);
 
         // Deploy MerkleAirdrop with computed root
-        airdrop = new MerkleAirdrop(
-            address(token),
-            merkleRoot,
-            address(this),
-            block.timestamp,
-            block.timestamp + 1 days
-        );
+        airdrop =
+            new MerkleAirdrop(address(token), merkleRoot, address(this), block.timestamp, block.timestamp + 1 days);
 
         // Fund the airdrop
         uint256 total = 0;
