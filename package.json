@@ -1,0 +1,29 @@
+{
+  "name": "merkle-airdrop-foundry",
+  "version": "1.0.0",
+  "description": "Merkle Airdrop (Foundry)",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Olacantona/merkle-airdrop-foundry.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Olacantona/merkle-airdrop-foundry/issues"
+  },
+  "homepage": "https://github.com/Olacantona/merkle-airdrop-foundry#readme",
+  "dependencies": {
+    "ethers": "^6.15.0",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.5.2"
+  }
+}
