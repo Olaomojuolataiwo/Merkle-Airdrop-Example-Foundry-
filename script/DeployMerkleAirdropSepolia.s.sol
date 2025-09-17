@@ -19,7 +19,7 @@ contract DeployMerkleAirdropSepolia is Script {
 
         // === Dynamically generate the Merkle root ===
         MerkleGenerator generator = new MerkleGenerator();
-        (bytes32[] memory leaves, ) = generator.getLeavesFromJSON(json);
+        (bytes32[] memory leaves,) = generator.getLeavesFromJSON(json);
         bytes32 merkleRoot = generator.buildMerkleRoot(leaves);
 
         // === Start broadcasting the transactions to the network ===

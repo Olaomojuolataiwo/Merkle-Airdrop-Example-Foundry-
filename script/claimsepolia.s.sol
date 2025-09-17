@@ -13,7 +13,7 @@ contract ClaimMerkleAirdropSepolia is Script {
 
     function run() external {
         uint256 fundedPrivateKey = vm.envUint("FUNDED_PRIVATE_KEY");
-	uint256 claimerPrivateKey = vm.envUint("PRIVATE_KEY");
+        uint256 claimerPrivateKey = vm.envUint("PRIVATE_KEY");
         address claimer = vm.addr(claimerPrivateKey);
         string memory json = vm.envString("WHITELIST_JSON");
 
@@ -41,8 +41,8 @@ contract ClaimMerkleAirdropSepolia is Script {
             }
         }
         require(found, "Claimant not found in the whitelist.");
-	
-	vm.startBroadcast(fundedPrivateKey);
+
+        vm.startBroadcast(fundedPrivateKey);
 
         // 3. Dynamically generate the Merkle proof for the claimant
         bytes32[] memory proof = generator.buildProof(leaves, claimantIndex);
@@ -51,10 +51,7 @@ contract ClaimMerkleAirdropSepolia is Script {
         MerkleAirdrop airdrop = MerkleAirdrop(merkleAirdropAddr);
         TestToken token = TestToken(tokenAddr);
 
-        
-
         // 4. Claim the airdrop using the dynamically generated proof
         airdrop.claim(claimantIndex, claimer, claimantAmount, proof);
-
-            }
+    }
 }

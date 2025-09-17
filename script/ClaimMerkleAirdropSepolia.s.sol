@@ -23,24 +23,24 @@ contract ClaimMerkleAirdropSepolia is Script {
 
         // === Load Merkle data from an environment variable ===
         string memory json = vm.envString("WHITELIST_JSON");
-        
+
         // === Find the claim for the current address ===
         uint256 index;
         uint256 amount;
         string[] memory proofStrings;
-        
+
         bool found = false;
-        
+
         // Iterate up to a small number of checks.
         // The loop is safe as it will break when no more claims are found.
         for (uint256 i = 0; i < 5; i++) {
             // Check if the address exists at this index before attempting to read it
             string memory claimPath = string.concat(".claims[", vm.toString(i), "].address");
-            
+
             // This is the correct way to handle optional JSON values
             if (vm.parseJson(json, claimPath).length > 0) {
-                 address claimantFromJSON = json.readAddress(claimPath);
-                 if (claimantFromJSON == claimerAddress) {
+                address claimantFromJSON = json.readAddress(claimPath);
+                if (claimantFromJSON == claimerAddress) {
                     index = json.readUint(string.concat(".claims[", vm.toString(i), "].index"));
                     amount = json.readUint(string.concat(".claims[", vm.toString(i), "].amount"));
                     proofStrings = json.readStringArray(string.concat(".claims[", vm.toString(i), "].proof"));

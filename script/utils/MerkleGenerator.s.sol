@@ -18,34 +18,33 @@ contract MerkleGenerator is Script {
         return keccak256(abi.encodePacked(index, account, amount));
     }
 
-function buildMerkleRoot(bytes32[] memory leaves) public pure returns (bytes32 root) {
-    bytes32[] memory currentLeaves = leaves;
-    while (currentLeaves.length > 1) {
-        uint256 n = (currentLeaves.length + 1) / 2;
-        bytes32[] memory newLeaves = new bytes32[](n);
-        for (uint256 i = 0; i < currentLeaves.length; i += 2) {
-            bytes32 left = currentLeaves[i];
-            bytes32 right;
-            if (i + 1 < currentLeaves.length) {
-                right = currentLeaves[i + 1];
-            } else {
-                right = bytes32(0);
+    function buildMerkleRoot(bytes32[] memory leaves) public pure returns (bytes32 root) {
+        bytes32[] memory currentLeaves = leaves;
+        while (currentLeaves.length > 1) {
+            uint256 n = (currentLeaves.length + 1) / 2;
+            bytes32[] memory newLeaves = new bytes32[](n);
+            for (uint256 i = 0; i < currentLeaves.length; i += 2) {
+                bytes32 left = currentLeaves[i];
+                bytes32 right;
+                if (i + 1 < currentLeaves.length) {
+                    right = currentLeaves[i + 1];
+                } else {
+                    right = bytes32(0);
+                }
+                if (left < right) {
+                    newLeaves[i / 2] = keccak256(abi.encodePacked(left, right));
+                } else {
+                    newLeaves[i / 2] = keccak256(abi.encodePacked(right, left));
+                }
             }
-            if (left < right) {
-                newLeaves[i / 2] = keccak256(abi.encodePacked(left, right));
-            } else {
-                newLeaves[i / 2] = keccak256(abi.encodePacked(right, left));
-            }
+            currentLeaves = newLeaves;
         }
-        currentLeaves = newLeaves;
+        if (currentLeaves.length == 1) {
+            return currentLeaves[0];
+        } else {
+            return bytes32(0);
+        }
     }
-    if (currentLeaves.length == 1) {
-        return currentLeaves[0];
-    } else {
-        return bytes32(0);
-    }
-}
-
 
     function buildProof(bytes32[] memory leaves, uint256 index) public pure returns (bytes32[] memory proof) {
         bytes32[] memory currentLeaves = leaves;
@@ -55,19 +54,18 @@ function buildMerkleRoot(bytes32[] memory leaves) public pure returns (bytes32 r
         while (n > 1) {
             uint256 nextN = (n + 1) / 2;
             bytes32[] memory newLeaves = new bytes32[](nextN);
-            
+
             uint256 siblingIndex = (index % 2 == 0) ? index + 1 : index - 1;
-	    
-	    bytes32 siblingHash;
+
+            bytes32 siblingHash;
 
             if (siblingIndex < n) {
-	    siblingHash = currentLeaves[siblingIndex];
-	    } else {
-		siblingHash = bytes32(0);
-	    }
-                proofSteps = append(proofSteps, siblingHash);
-            
-            
+                siblingHash = currentLeaves[siblingIndex];
+            } else {
+                siblingHash = bytes32(0);
+            }
+            proofSteps = append(proofSteps, siblingHash);
+
             for (uint256 i = 0; i < n; i += 2) {
                 bytes32 left = currentLeaves[i];
                 bytes32 right;
@@ -98,9 +96,12 @@ function buildMerkleRoot(bytes32[] memory leaves) public pure returns (bytes32 r
         newArr[arr.length] = element;
         return newArr;
     }
-    
-   
-    function getLeavesFromJSON(string memory _jsonContent) public view returns (bytes32[] memory leaves, AirdropData[] memory data) {
+
+    function getLeavesFromJSON(string memory _jsonContent)
+        public
+        view
+        returns (bytes32[] memory leaves, AirdropData[] memory data)
+    {
         string memory claimsArrayPath = ".claims";
 
         // Temporary storage for a hardcoded number of claims.
@@ -108,21 +109,21 @@ function buildMerkleRoot(bytes32[] memory leaves) public pure returns (bytes32 r
         bytes32[3] memory tempLeaves;
         AirdropData[3] memory tempData;
         uint256 claimsFound = 0;
-        
+
         for (uint256 i = 0; i < 3; i++) {
             string memory claimPath = string.concat(claimsArrayPath, "[", vm.toString(i), "]");
             if (vm.keyExists(_jsonContent, claimPath)) {
                 tempData[i].index = vm.parseJsonUint(_jsonContent, string.concat(claimPath, ".index"));
                 tempData[i].account = vm.parseJsonAddress(_jsonContent, string.concat(claimPath, ".address"));
                 tempData[i].amount = vm.parseJsonUint(_jsonContent, string.concat(claimPath, ".amount"));
-                
+
                 tempLeaves[i] = getLeaf(tempData[i].index, tempData[i].account, tempData[i].amount);
                 claimsFound++;
             } else {
                 break;
             }
         }
-        
+
         leaves = new bytes32[](claimsFound);
         data = new AirdropData[](claimsFound);
 
