@@ -1,49 +1,80 @@
-Merkle Airdrop (Foundry)
+# 🌿 Merkle Airdrop (Foundry)
 
-A simple Merkle Airdrop smart contract implementation with a Foundry test suite.
-The project demonstrates how to use a Merkle tree for verifying claims in an airdrop scenario.
+![Solidity](https://img.shields.io/badge/Solidity-0.8.20+-blue.svg)
+![Foundry](https://img.shields.io/badge/Framework-Foundry-orange.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-Features
+A compact, auditable **Merkle Airdrop system** built with [Foundry](https://book.getfoundry.sh/).  
+It demonstrates end-to-end airdrop distribution — from JSON claim data to Merkle root generation and on-chain claim verification.
 
-ERC20 token for testing (TestToken)
-Merkle Airdrop contract with claim verification
-Claim window (start & end timestamps)
-Admin role with rotation support
-Extensive test coverage using Foundry
+---
 
-Project Structure
-src/        # Smart contracts
-test/       # Test files
-foundry.toml
-README.md
+## 🧠 Overview
 
-Getting Started
+This project provides:
+- **Off-chain Merkle generation** using Solidity scripts  
+- **On-chain proof verification** for token claims  
+- **Automated deployment** to Sepolia via Foundry  
 
-1. Prerequisites
-Foundry
+Main components:
+1. `MerkleGenerator.s.sol` — parses JSON claim data, builds leaves & Merkle root  
+2. `MerkleAirdrop.sol` — contract verifying proofs and handling secure token claims  
+3. `DeployMerkleAirdropSepolia.s.sol` — broadcasts deployment with Foundry scripts  
 
-2. Install dependencies
-forge install
+---
 
-3. Run tests
-forge test -vv
+## ⚙️ Structure
+src/
+├─ MerkleAirdrop.sol
+└─ MockERC20.sol
+script/
+├─ DeployMerkleAirdropSepolia.s.sol
+└─ utils/MerkleGenerator.s.sol
+test/
+└─ MerkleAirdropTest.t.sol
+airdrop.json
 
-Example
+## 🚀 Quick Start
+```bash
+forge build
+forge script script/DeployMerkleAirdropSepolia.s.sol --rpc-url $RPC_URL_SEPOLIA --broadcast
 
-Deploy MerkleAirdrop with:
+🪂 Automatically:
+Reads airdrop.json
+Generates Merkle root
+Deploys contracts & initializes airdrop
 
-airdrop = new MerkleAirdrop(
-    address(token),
-    merkleRoot,
-    admin,
-    start,
-    end
-);
+🧪 Testing
+Covers:
+✅ Leaf & root generation
+✅ Proof verification
+✅ Double-claim protection
 
+Run:
+bash
+forge test
 
-Users can then claim with a valid Merkle proof: airdrop.claim(index, account, amount, proof);
+🧾 Example JSON
+json
+{
+  "claims": [
+    { "index": 0, "address": "0x1111...", "amount": 1000 },
+    { "index": 1, "address": "0x2222...", "amount": 2000 }
+  ]
+}
 
-License
+🔗 Built With
+Solidity ^0.8.20
 
-MIT
+Foundry + Forge Std
 
+OpenZeppelin ERC-20
+
+👤 Author
+Olaomoju Ola-Taiwo
+🔗 GitHub
+
+📜 MIT License
+
+yaml
+Copy code
